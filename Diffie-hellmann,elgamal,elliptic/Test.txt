@@ -1,0 +1,24 @@
+from cryptocourse import basic_dh
+from cryptocourse import hkdf
+from cryptocourse import aesModeOfOperation
+import hashlib
+
+a = basic_dh.DiffieHellman()
+b = basic_dh.DiffieHellman()
+
+publica = a.gen_public_key()
+publicb = b.gen_public_key()
+
+sharedsecretab = a.gen_shared_key(publicb)
+sharedsecretba = b.gen_shared_key(publica)
+
+kdf = hkdf.HKDF(sharedsecretab, b"asecretpassword", hashlib.sha512)
+key = kdf.expand(b"context", 48)
+
+print(len(key))
+
+masterkey = key[0:32]
+iv = key[32:]
+
+with open(, "rb") as f:
+    data = f.read()
